@@ -1,1 +1,5 @@
 include ':app', ':firstplugin'
+println "Setting.gralde id is "+ gradle.hashCode();
+println "Home Dir:" + gradle.gradleHomeDir
+println "User Home Dir:" + gradle.gradleUserHomeDir
+println "Parent: " + gradle.parent

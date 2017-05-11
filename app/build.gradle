@@ -1,5 +1,64 @@
 apply plugin: 'com.android.application'
-apply plugin: 'github.hellocsl.first.plugin'    //properties 的文件名
+apply plugin: 'github.hellocsl.first.plugin'
+apply from: rootProject.getRootDir().getAbsolutePath() + "/utils.gradle"
+
+println "app.gralde id is " + gradle.hashCode();
+println "Home Dir:" + gradle.gradleHomeDir
+println "User Home Dir:" + gradle.gradleUserHomeDir
+println "Parent: " + gradle.parent
+
+println "Project Name: " + project.getName()
+
+project.ext.set("myProjectName", "app")
+
+println "myProjectName:" + project.myProjectName
+println "myAppProjectName:" + gradle.myProjectName
+println "ProjectName:" + myProjectName
+
+project.tasks
+
+class TimingsListener implements TaskExecutionListener, BuildListener {
+    private Clock clock
+    private timings = []
+
+    @Override
+    void beforeExecute(Task task) {
+        clock = new org.gradle.util.Clock()
+    }
+
+    @Override
+    void afterExecute(Task task, TaskState taskState) {
+        def ms = clock.timeInMs
+        timings.add([ms, task.path])
+        task.project.logger.warn "${task.path} took ${ms}ms"
+    }
+
+    @Override
+    void buildFinished(BuildResult result) {
+        println "Task timings:"
+        for (timing in timings) {
+            if (timing[0] >= 5) {
+                printf "%7sms  %s\n", timing
+            }
+        }
+    }
+
+    @Override
+    void buildStarted(Gradle gradle) {}
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {}
+
+    @Override
+    void projectsLoaded(Gradle gradle) {}
+
+    @Override
+    void settingsEvaluated(Settings settings) {}
+}
+
+gradle.addListener new TimingsListener()
+
+
 
 android {
     compileSdkVersion 25

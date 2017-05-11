@@ -1,0 +1,21 @@
+//解析 XML 时候要引入这个 groovy 的 package
+
+def getVersionNameAdvanced() {//老朋友
+    def xmlFile = project.file("AndroidManifest.xml")
+    def rootManifest = new XmlSlurper().parse(xmlFile)
+    return rootManifest['@android:versionName']
+}
+
+def disableDebugBuild() {
+    //返回值保存到 targetTasks 容器中
+    def targetTasks = project.tasks.findAll { task -> task.name.contains("Debug") }
+    //对满足条件的 task，设置它为 disable。如此这般，这个 Task 就不会被执行 targetTasks.each{
+    println "disable debug task : ${it.name}"
+    it.setEnabled false
+}
+
+//将函数设置为 extra 属性中去，这样，加载 utils.gradle 的 Project 就能调用此文件中定义的函数了
+ext {
+    getVersionNameAdvanced = this.&getVersionNameAdvanced
+    disableDebugBuild = this.&disableDebugBuild
+}

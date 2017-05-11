@@ -7,7 +7,7 @@ public class FirstPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.task('testTask').doLast {
+        project.task('firstTask').doLast {
             println "Hello my first gradle plugin"
         }
     }
